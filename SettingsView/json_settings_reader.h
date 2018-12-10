@@ -5,7 +5,7 @@
 #include <rapidjson/document.h>
 #include <memory>
 
-class json_settings_reader : public settings_reader
+class json_settings_reader final : public settings_reader
 {
 public:
     explicit json_settings_reader(rapidjson::Document&& settings);
