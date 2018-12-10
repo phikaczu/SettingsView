@@ -17,6 +17,9 @@ namespace internal {
         using source_type = In;
         using value_type = Out;
 
+        // pure static class
+        types() = delete;
+
         static value_type parse(source_type&& input)
         {
             return value_type(std::move(input));
