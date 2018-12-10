@@ -1,34 +1,42 @@
 #pragma once
 
-#include <rapidjson/document.h>
+#include "salary_level.h"
 
 #include <string>
+#include <type_traits>
 
 namespace settings {
 
-    namespace internal {
-        template <typename T>
-        T parse(const rapidjson::Document& settings, const char* memberName);
-    }
+namespace internal {
 
-    struct name
+    // The string literal could be passed as a template parameter
+    // but I thing it is more readable when it is not made.
+    template <typename In, typename Out = In>
+    struct types
     {
-        using value_type = std::string;
-        static value_type parse(const rapidjson::Document& settings);
+        using source_type = In;
+        using value_type = Out;
+
+        static value_type parse(source_type&& input)
+        {
+            return value_type(std::move(input));
+        }
     };
 
-    struct age
+}  // namespace internal
+
+    struct name : internal::types<std::string>
     {
-        using value_type = int;
-        static value_type parse(const rapidjson::Document& settings);
+        static constexpr auto path = "name";
     };
 
-    struct salary
+    struct age : internal::types<int>
     {
-        using value_type = int;
-        static value_type parse(const rapidjson::Document& settings);
+        static constexpr auto path = "age";
     };
 
-    // Or even more simply
-    //struct salary : public setting_type<int, "salary"> {};
+    struct salary : internal::types<std::underlying_type_t<salary_level>, salary_level>
+    {
+        static constexpr auto path = "salary";
+    };
 }

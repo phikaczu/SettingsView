@@ -30,6 +30,15 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="settings_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json_settings_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="salary_level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -41,7 +50,7 @@
     <ClCompile Include="settings_provider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="settings_types.cpp">
+    <ClCompile Include="json_settings_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

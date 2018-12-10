@@ -155,13 +155,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="json_settings_reader.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="salary_level.h" />
     <ClInclude Include="settings_provider.h" />
+    <ClInclude Include="settings_reader.h" />
     <ClInclude Include="settings_types.h" />
     <ClInclude Include="settings_view.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="json_settings_reader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -170,7 +174,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="settings_provider.cpp" />
-    <ClCompile Include="settings_types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,13 +2,7 @@
 
 #include "settings_provider.h"
 
-#include <rapidjson/error/en.h>
-
-settings_provider::settings_provider(rapidjson::Document&& settings)
-    : m_settings{ std::move(settings) }
+settings_provider::settings_provider(std::unique_ptr<settings_reader>&& settingsReader)
+    : m_settingsReader{ std::move(settingsReader) }
 {
-    if (m_settings.HasParseError()) {
-        const auto errorMsg = rapidjson::GetParseError_En(m_settings.GetParseError());
-        throw std::runtime_error(errorMsg);
-    }
 }
