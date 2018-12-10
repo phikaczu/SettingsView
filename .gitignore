@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+#VS files
+/.vs
+/*.VC.db
+*.opendb
+*.TMP
+Release
+x64
+packages
+/*.vcxproj.user
+Debug
