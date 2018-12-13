@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "instance_tracker.h"
 #include <monitor.h>
+#include "instance_tracker.h"
 
 namespace
 {
@@ -32,6 +32,11 @@ namespace
         {
             m_unlockCount++;
             m_lock = lock_type::unlocked;
+        }
+
+        lock_type state() const
+        {
+            return m_lock;
         }
 
         int lock_count() const
@@ -120,7 +125,7 @@ namespace
     };
 }  // namespace
 
-TEST(MonitorTest, SharedLockIsUsedWhenTakingCopy)
+TEST(MonitorWithSharedMutexTest, SharedLockIsUsedWhenTakingCopy)
 {
     monitor<int, test_shared_mutex> m;
     const auto& mutexes = instance_tracker<test_shared_mutex>::get();
@@ -142,7 +147,7 @@ TEST(MonitorTest, SharedLockIsUsedWhenTakingCopy)
     ASSERT_EQ(1, mutex.shared_unlock_count());
 }
 
-TEST(MonitorTest, SharedLockIsUsedWhenTakingConstReference)
+TEST(MonitorWithSharedMutexTest, SharedLockIsUsedWhenTakingConstReference)
 {
     monitor<int, test_shared_mutex> m;
     const auto& mutexes = instance_tracker<test_shared_mutex>::get();
@@ -164,7 +169,7 @@ TEST(MonitorTest, SharedLockIsUsedWhenTakingConstReference)
     ASSERT_EQ(1, mutex.shared_unlock_count());
 }
 
-TEST(MonitorTest, ExclusiveLockIsUsedWhenTakingMutableReference)
+TEST(MonitorWithSharedMutexTest, ExclusiveLockIsUsedWhenTakingMutableReference)
 {
     monitor<int, test_shared_mutex> m;
     const auto& mutexes = instance_tracker<test_shared_mutex>::get();
@@ -184,4 +189,35 @@ TEST(MonitorTest, ExclusiveLockIsUsedWhenTakingMutableReference)
     ASSERT_EQ(1, mutex.unlock_count());
     ASSERT_EQ(0, mutex.shared_lock_count());
     ASSERT_EQ(0, mutex.shared_unlock_count());
+}
+
+template <typename T>
+class MonitorWithMutexTest : public ::testing::Test
+{
+public:
+    // Cannot use TypeParam in the test, because it seems that TypeParam type is decayed
+    using type = T;
+};
+
+using MonitorArgumentTypes = ::testing::Types<int, int&, const int&>;
+TYPED_TEST_CASE(MonitorWithMutexTest, MonitorArgumentTypes);
+
+TYPED_TEST(MonitorWithMutexTest, ExclusiveLockIsUsedAlways)
+{
+    monitor<int, test_mutex> m;
+    const auto& mutexes = instance_tracker<test_mutex>::get();
+    ASSERT_EQ(1, mutexes.size());
+    auto& mutex = mutexes.front().get();
+    auto mutexState = mutex.state();
+    ASSERT_EQ(lock_type::unlocked, mutexState);
+
+    m([&](typename TestFixture::type x) { mutexState = mutex.state(); });
+    ASSERT_EQ(lock_type::exclusivelock, mutexState);
+
+    mutexState = mutex.state();
+    ASSERT_EQ(lock_type::unlocked, mutexState);
+
+    ASSERT_EQ(1, mutexes.size());
+    ASSERT_EQ(1, mutex.lock_count());
+    ASSERT_EQ(1, mutex.unlock_count());
 }

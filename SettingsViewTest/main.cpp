@@ -4,7 +4,7 @@ int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     //::testing::FLAGS_gtest_death_test_style = "fast";
-    ::testing::GTEST_FLAG(filter) = "MonitorTest.*";
+    //::testing::GTEST_FLAG(filter) = "MonitorWithMutexTest*";
 
     return RUN_ALL_TESTS();
 }
