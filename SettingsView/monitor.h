@@ -31,6 +31,7 @@ public:
     template <typename F>
     decltype(auto) operator()(F f) const
     {
+        // OPEN instead of the has_lock_shared_method_v a trait could be used
         if constexpr (std::is_invocable_v<F, const T> && has_lock_shared_method_v<mutex_t>) {
             std::shared_lock<mutex_t> lock{m_valueMtx};
             return f(m_value);
